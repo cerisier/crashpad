@@ -15,6 +15,7 @@
 #include "snapshot/linux/thread_snapshot_linux.h"
 
 #include <sched.h>
+
 #include <algorithm>
 
 #ifdef CLIENT_STACKTRACES_ENABLED
@@ -212,8 +213,9 @@ bool ThreadSnapshotLinux::Initialize(
   if (max_stack_capture_size > 0) {
     stack_region_size = std::min(stack_region_size, max_stack_capture_size);
   }
-  stack_.Initialize(
-      process_reader->Memory(), thread.stack_region_address, stack_region_size);
+  stack_.Initialize(process_reader->Memory(),
+                    thread.stack_region_address,
+                    stack_region_size);
 
   thread_specific_data_address_ =
       thread.thread_info.thread_specific_data_address;
