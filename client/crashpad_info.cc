@@ -143,7 +143,8 @@ CrashpadInfo::CrashpadInfo()
       intermediate_dump_extra_memory_ranges_(nullptr)
 #endif
       ,
-      max_stack_capture_size_(0) {
+      max_stack_capture_size_(0)
+{
 }
 
 UserDataMinidumpStreamHandle* CrashpadInfo::AddUserDataMinidumpStream(
