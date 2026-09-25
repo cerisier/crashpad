@@ -115,6 +115,7 @@ class CrashpadInfoReader::InfoContainerSpecific : public InfoContainer {
     typename Traits::Address simple_annotations;
     typename Traits::Address user_data_minidump_stream_head;
     typename Traits::Address annotations_list;
+    uint32_t max_stack_capture_size;
   } info;
 
 #if defined(ARCH_CPU_64_BITS)
@@ -183,6 +184,8 @@ DEFINE_GETTER(uint32_t,
               indirectly_referenced_memory_cap)
 
 DEFINE_GETTER(TriState, LimitStackCaptureToSp, limit_stack_capture_to_sp)
+
+DEFINE_GETTER(uint32_t, MaxStackCaptureSize, max_stack_capture_size)
 
 DEFINE_GETTER(VMAddress, ExtraMemoryRanges, extra_memory_ranges)
 

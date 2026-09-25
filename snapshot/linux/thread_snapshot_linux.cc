@@ -15,6 +15,7 @@
 #include "snapshot/linux/thread_snapshot_linux.h"
 
 #include <sched.h>
+#include <algorithm>
 
 #ifdef CLIENT_STACKTRACES_ENABLED
 #include <endian.h>
@@ -149,7 +150,8 @@ ThreadSnapshotLinux::~ThreadSnapshotLinux() {}
 bool ThreadSnapshotLinux::Initialize(
     ProcessReaderLinux* process_reader,
     const ProcessReaderLinux::Thread& thread,
-    uint32_t* gather_indirectly_referenced_memory_bytes_remaining) {
+    uint32_t* gather_indirectly_referenced_memory_bytes_remaining,
+    LinuxVMSize max_stack_capture_size) {
   INITIALIZATION_STATE_SET_INITIALIZING(initialized_);
 
 #if defined(ARCH_CPU_X86_FAMILY)
@@ -206,9 +208,12 @@ bool ThreadSnapshotLinux::Initialize(
 #error Port.
 #endif
 
-  stack_.Initialize(process_reader->Memory(),
-                    thread.stack_region_address,
-                    thread.stack_region_size);
+  LinuxVMSize stack_region_size = thread.stack_region_size;
+  if (max_stack_capture_size > 0) {
+    stack_region_size = std::min(stack_region_size, max_stack_capture_size);
+  }
+  stack_.Initialize(
+      process_reader->Memory(), thread.stack_region_address, stack_region_size);
 
   thread_specific_data_address_ =
       thread.thread_info.thread_specific_data_address;
